@@ -24,15 +24,34 @@ case class ILIRecord(
 }*/
 
 object SimpleApp {
+  def isPrime(testValue: Int): Boolean = {
+    val previousValues = (2 until testValue).toList
+    val multipleMap = previousValues.foldLeft(Map.empty[Int,Boolean]){ (soFar, value) =>
+      val isMultiple = if(testValue % value == 0) true else false
+      soFar ++ Map(value -> isMultiple)
+    }
+
+    val multiples = multipleMap.foldLeft(0) { (z,m) =>
+      val (k,v) = m
+      if(v) {
+        z+1
+      } else {
+        z+0
+      }
+    }
+    multiples == 0
+  }
+
   def main(args: Array[String]) {
-    val dataFile = "d:/Projects/spark/testproj/ILINet.csv" // Should be some file on your system
+    //val dataFile = "d:/Projects/spark/testproj/ILINet.csv" // Should be some file on your system
     //val conf = new SparkConf().setAppName("Spark Test").setMaster("local[4]")
     val spark = SparkSession.builder.master("local").appName("Spark Test").getOrCreate()
-    val df:DataFrame = spark.read.format("csv").option("header", "true").load(dataFile)
-    df.createOrReplaceTempView("cdc")
-
-    val sqlDF = spark.sql("SELECT * FROM cdc where YEAR=2018")
-    sqlDF.show()
+    val result = spark.sparkContext.parallelize(Seq(1,2,3,4,5), 4).map{ i => i*i }
+//    val df: DataFrame = spark.read.format("csv").option("header", "true").load(dataFile)
+//    df.createOrReplaceTempView("cdc")
+//
+//    val sqlDF = spark.sql("SELECT * FROM cdc where YEAR=2018")
+//    sqlDF.show()
     spark.stop()
   }
 }

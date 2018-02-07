@@ -25,9 +25,9 @@ case class ILIRecord(
 
 object SimpleApp {
   def main(args: Array[String]) {
-    val dataFile = "d:/Projects/spark/ILINet.csv" // Should be some file on your system
+    val dataFile = "d:/Projects/spark/testproj/ILINet.csv" // Should be some file on your system
     //val conf = new SparkConf().setAppName("Spark Test").setMaster("local[4]")
-    val spark = SparkSession.builder.master("local[4]").appName("Spark Test").getOrCreate()
+    val spark = SparkSession.builder.master("local").appName("Spark Test").getOrCreate()
     val df:DataFrame = spark.read.format("csv").option("header", "true").load(dataFile)
     df.createOrReplaceTempView("cdc")
 

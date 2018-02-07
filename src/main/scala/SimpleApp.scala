@@ -25,11 +25,12 @@ object SimpleApp {
   def main(args: Array[String]) {
     //val dataFile = "d:/Projects/spark/testproj/ILINet.csv" // Should be some file on your system
     //val conf = new SparkConf().setAppName("Spark Test").setMaster("local[4]")
-    val spark = SparkSession.builder.master("local").appName("Spark Test").getOrCreate()
-    val testValue = 5
-    val result = spark.sparkContext.parallelize(2 until testValue, 4).map{ i =>
+    val spark = SparkSession.builder.master("local[5]").appName("Spark Test").getOrCreate()
+    val testValue = 1234567
+    val hasFactor = spark.sparkContext.parallelize(2 until testValue, 4).map{ i =>
       if(testValue % i == 0) true else false
-    }.collect()
+    }.collect().foldLeft(false) { (soFar, isFactor) => soFar || isFactor }
+    println(s"hasFactor: $hasFactor")
 //    val df: DataFrame = spark.read.format("csv").option("header", "true").load(dataFile)
 //    df.createOrReplaceTempView("cdc")
 //
